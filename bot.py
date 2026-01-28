@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urlparse
 
 from edapi import EdAPI
 from bs4 import BeautifulSoup
@@ -29,7 +30,8 @@ def handle_link_shared_events(event: dict, client: WebClient):
     # parse and fetch data for each link
     unfurl_data = {}
     for link in event.get("links", []):
-        thread_id = link['url'].split("/")[-1]
+        path = urlparse(link['url']).path
+        thread_id = path.split("/")[-1]
         logging.info(f"Shared link: {link['url']} has thread ID: {thread_id}")
         unfurl_data[link['url']] = process_ed_thread(int(thread_id))
 
